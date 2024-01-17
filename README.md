@@ -26,7 +26,7 @@ personMap.put("address", new LinkedHashMap<String, Object>());
 ...
 personMap.put("phoneNumbers", Arrays.asList(...));
 personMap.put("id", 123);
-personMap.put("birthDate", new LocalDate("1992-02-26"));
+personMap.put("birthDate", LocalDate.of("1992-02-26"));
 
 var personClone = MapUtils.cloneRecursively(sourceMap);
 // personMap was cloned and the clone was assigned to personClone
