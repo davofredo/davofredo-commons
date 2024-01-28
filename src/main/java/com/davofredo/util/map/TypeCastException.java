@@ -6,7 +6,7 @@ public class TypeCastException extends RuntimeException {
         super(message);
     }
 
-    public TypeCastException(MapAttribute attribute, Object mismatchObject, Class<?> expectedType, boolean isAttemptToWrite) {
+    TypeCastException(MapAttribute attribute, Object mismatchObject, Class<?> expectedType, boolean isAttemptToWrite) {
         super(String.format(TEMPLATE_DEFAULT,
                 attribute.getName(),
                 expectedType.getName(),

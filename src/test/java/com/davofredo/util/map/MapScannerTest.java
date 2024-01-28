@@ -18,6 +18,14 @@ class MapScannerTest {
     @BeforeEach
     void beforeAll() {
         List<String> phoneNumbers = Arrays.asList("4665435677","3455677889","8776554434");
+        var testMap = new HashMap<String, Object>();
+        testMap.put("phoneNumbers", phoneNumbers);
+        testMap.put("person", initPersonMap());
+        testMap.put("content", "person");
+        mapScanner = new MapScanner(testMap);
+    }
+
+    Map<String, Object> initPersonMap() {
         var skill1 = new HashMap<>();
         skill1.put("name", "Jump high");
         skill1.put("level", "pro");
@@ -31,16 +39,12 @@ class MapScannerTest {
         var address = new HashMap<>();
         address.put("street", "5th Avenue");
         address.put("number", "525");
-        var person = new HashMap<>();
+        var person = new HashMap<String, Object>();
         person.put("firstName", "Aidan");
         person.put("lastName", "Proud");
         person.put("address", address);
         person.put("skills", skillList);
-        var testMap = new HashMap<String, Object>();
-        testMap.put("phoneNumbers", phoneNumbers);
-        testMap.put("person", person);
-        testMap.put("content", "person");
-        mapScanner = new MapScanner(testMap);
+        return person;
     }
 
     @Test
@@ -149,7 +153,7 @@ class MapScannerTest {
         List<?> skillList = mapScanner.get("person.skills[]", List.class);
         Assertions.assertNotNull(skillList);
         Assertions.assertEquals(3, skillList.size());
-        skillList.forEach(skill -> Assertions.assertTrue(skill instanceof Map));
+        skillList.forEach(skill -> Assertions.assertInstanceOf(Map.class, skill));
     }
 
     @Test
@@ -159,10 +163,16 @@ class MapScannerTest {
     }
 
     @Test
+    void testGet_providingNullType() {
+        IllegalArgumentException e = Assertions.assertThrows(IllegalArgumentException.class, () -> mapScanner.get("phoneNumbers[0]", null));
+        Assertions.assertEquals("\"valueType\" argument is mandatory.", e.getMessage());
+    }
+
+    @Test
     void testSet_intoListWithMissingName() {
         mapScanner.set("person.[0].name", "mock name");
         Assertions.assertEquals("mock name", mapScanner.get("person.[0].name"));
-        Assertions.assertTrue(mapScanner.get("person.[0]") instanceof Map);
+        Assertions.assertInstanceOf(Map.class, mapScanner.get("person.[0]"));
         Map<?, ?> personMap = mapScanner.get("person", Map.class);
         // "[0]" cannot be considered a list, because it lacks of name, so it is handled as a field name (map key)
         Assertions.assertTrue(personMap.containsKey("[0]"));
@@ -333,7 +343,7 @@ class MapScannerTest {
         Assertions.assertFalse(map.isEmpty());
         Assertions.assertTrue(map.containsKey("person"));
         Assertions.assertNotNull(map.get("person"));
-        Assertions.assertTrue(map.get("person") instanceof Map);
+        Assertions.assertInstanceOf(Map.class, map.get("person"));
         Assertions.assertTrue(((Map<String, Object>) map.get("person")).containsKey("address"));
     }
 

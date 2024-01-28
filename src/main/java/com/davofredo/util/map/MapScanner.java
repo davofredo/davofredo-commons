@@ -155,10 +155,10 @@ public class MapScanner {
      * </ul>
      *
      * @param fieldName Name of the inner field to read value from. Example: <code>"person.firstName"</code>
-     * @param valueType Class of the expected value. Example: <code>String.class</code>
+     * @param valueType <b>@NotNull</b> Class of the expected value. Example: <code>String.class</code>
      * @return The value stored in the field indicated by <b>fieldName</b>
      * @param <T> Expected value type
-     * @throws com.davofredo.util.map.TypeCastException if <b>valueType</b> is not assignable from the resulting value
+     * @throws com.davofredo.util.map.TypeCastException if <b>valueType</b> is not assignable from the resulting value's class
      */
     @SuppressWarnings("unchecked")
     public <T> T get(String fieldName, Class<T> valueType) {
@@ -387,7 +387,7 @@ public class MapScanner {
             return false;
         String strIdx = name.substring(idxStart, idxEnd);
         try {
-            if (strIdx.length() > 0)
+            if (!strIdx.isEmpty())
                 attribute.setIndex(Integer.parseInt(strIdx));
             attribute.setType(MapAttribute.TYPE_LIST);
             attribute.setName(name.substring(0, idxStart - 1));
